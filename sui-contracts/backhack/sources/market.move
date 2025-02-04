@@ -78,7 +78,7 @@ module backhack::market {
     // The global state
     public struct MarketGlobal has key {
         id: UID, // Object ID
-        ai_agent_list: vector<address>, // List of addresses with management permissions
+        manager_list: vector<address>, // List of addresses with management permissions
         markets: Table<u64, MarketStore>, // Mapping: Market ID -> MarketStore
         positions: Table<u64, Position>, // Mapping: Position ID -> User's betting position
         max_bet_amount: u64, // Maximum allowable bet per position 
@@ -128,13 +128,13 @@ module backhack::market {
         );
 
         // Create a new list for adding to the global state
-        let mut whitelist_list = vector::empty<address>();
-        vector::push_back<address>(&mut whitelist_list, tx_context::sender(ctx));
+        let mut manager_list = vector::empty<address>();
+        vector::push_back<address>(&mut manager_list, tx_context::sender(ctx));
 
         // Initialize the global state
         let global = MarketGlobal {
             id: object::new(ctx),
-            ai_agent_list: whitelist_list,
+            manager_list,
             markets: table::new<u64, MarketStore>(ctx),
             positions: table::new<u64, Position>(ctx),
             max_bet_amount: DEFAULT_MAX_BET_AMOUNT,
@@ -426,16 +426,16 @@ module backhack::market {
 
     // Adds a given address to the whitelist.
     public entry fun add_address(global: &mut MarketGlobal, _manager_cap: &mut ManagerCap, caller_address: address) {
-        let (found, _) = vector::index_of<address>(&global.ai_agent_list, &caller_address);
+        let (found, _) = vector::index_of<address>(&global.manager_list, &caller_address);
         assert!( found == false , ERR_DUPLICATED);
-        vector::push_back(&mut global.ai_agent_list, caller_address );
+        vector::push_back(&mut global.manager_list, caller_address );
     }
 
     // Removes a given address from the whitelist.
     public entry fun remove_address(global: &mut MarketGlobal, _manager_cap: &mut ManagerCap, caller_address: address) {
-        let (found, index) = vector::index_of<address>(&global.ai_agent_list, &caller_address);
+        let (found, index) = vector::index_of<address>(&global.manager_list, &caller_address);
         assert!( found == true , ERR_NOT_FOUND);
-        vector::swap_remove<address>(&mut global.ai_agent_list, index );
+        vector::swap_remove<address>(&mut global.manager_list, index );
     }
 
     // Updates the maximum bet amount.
@@ -471,7 +471,7 @@ module backhack::market {
     // ======== Internal Functions =========
 
     fun verify_caller(global: &MarketGlobal , caller_address: address) {
-        let (found, _) = vector::index_of<address>(&global.ai_agent_list, &caller_address);
+        let (found, _) = vector::index_of<address>(&global.manager_list, &caller_address);
         assert!( found, ERR_UNAUTHORIZED );
     }
 
