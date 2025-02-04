@@ -5,7 +5,7 @@ const schema = a.schema({
     .model({
       username: a.string().required(),
       hackathons: a.hasMany('Hackathon', "managerId"),
-      reviews: a.hasMany('Review', "userId"),
+      comments: a.hasMany('Comment', "userId"),
       positions: a.hasMany('Position', "userId"),
       role: a.enum(["USER", "MANAGER", "ADMIN"])
     })
@@ -24,13 +24,13 @@ const schema = a.schema({
       endDate: a.datetime(),
       category: a.string(),
       tags: a.string().array(),
-      reviews: a.hasMany('Review', "hackathonId"),
+      comments: a.hasMany('Comment', "hackathonId"),
       prizes: a.hasMany('Prize', "hackathonId"),
       teams: a.hasMany('Team', "hackathonId"),
       positions: a.hasMany('Position', "hackathonId")
     })
     .authorization((allow) => [allow.publicApiKey()]),
-    Review: a.model({
+    Comment: a.model({
       hackathonId: a.id().required(),
       userId: a.id().required(),
       user: a.belongsTo('User', "userId"),
@@ -44,6 +44,7 @@ const schema = a.schema({
       hackathon: a.belongsTo('Hackathon', "hackathonId"),
       userId: a.id().required(),
       user: a.belongsTo('User', "userId"),
+      onchainId: a.integer(),
       predictedTeam: a.integer(),
       betAmount: a.string(),
       hidden: a.boolean(),
@@ -61,7 +62,17 @@ const schema = a.schema({
       image: a.url(),
       github: a.url(),
       socials: a.url().array(),
-      createdDate: a.datetime()
+      createdDate: a.datetime(),
+      comments: a.hasMany('Review', "teamId"),
+    }).authorization((allow) => [allow.publicApiKey()]),
+    Review: a.model({
+      teamId: a.id().required(), 
+      user: a.belongsTo('Team', "teamId"),
+      reviewer: a.string(),
+      overallScore: a.integer(),
+      feedback: a.string(),
+      improvementSuggestions: a.string().array(),
+      reviewDate: a.datetime()
     }).authorization((allow) => [allow.publicApiKey()]),
     Prize: a.model({
       hackathonId: a.id().required(),

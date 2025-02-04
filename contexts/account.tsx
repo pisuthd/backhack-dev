@@ -38,7 +38,7 @@ const Provider = ({ children }: any) => {
   const isConnected = !!address
 
   const handleLoginAs = useCallback(
-    (newUser) => {
+    (newUser: any) => {
       dispatch({ user: newUser });
       sessionStorage.setItem("user", JSON.stringify(newUser));
       sessionStorage.setItem("userRole", newUser.role);
