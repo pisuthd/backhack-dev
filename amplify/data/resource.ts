@@ -26,7 +26,8 @@ const schema = a.schema({
       tags: a.string().array(),
       reviews: a.hasMany('Review', "hackathonId"),
       prizes: a.hasMany('Prize', "hackathonId"),
-      teams: a.hasMany('Team', "hackathonId")
+      teams: a.hasMany('Team', "hackathonId"),
+      positions: a.hasMany('Position', "hackathonId")
     })
     .authorization((allow) => [allow.publicApiKey()]),
     Review: a.model({
@@ -40,9 +41,9 @@ const schema = a.schema({
     }).authorization((allow) => [allow.publicApiKey()]),
     Position: a.model({
       hackathonId: a.id().required(),
+      hackathon: a.belongsTo('Hackathon', "hackathonId"),
       userId: a.id().required(),
       user: a.belongsTo('User', "userId"),
-      hackathon: a.belongsTo('Hackathon', "hackathonId"),
       predictedTeam: a.integer(),
       betAmount: a.string(),
       hidden: a.boolean(),
