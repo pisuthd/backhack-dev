@@ -26,7 +26,7 @@ const schema = a.schema({
       tags: a.string().array(),
       reviews: a.hasMany('Review', "hackathonId"),
       prizes: a.hasMany('Prize', "hackathonId"),
-      teams: a.hasMany('Prediction', "hackathonId")
+      teams: a.hasMany('Team', "hackathonId")
     })
     .authorization((allow) => [allow.publicApiKey()]),
     Review: a.model({
