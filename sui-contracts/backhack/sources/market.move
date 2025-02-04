@@ -63,7 +63,7 @@ module backhack::market {
 
     public struct MarketStore has store {
         start_time: u64, // Hackathon start timestamp in epoch
-        end_time: u64, // Hackathon end timestamp in epoch  
+        end_time: u64, // Hackathon end timestamp in epoch (Not Deadline Submission)
         total_bets: Table<u64, u64>, // Mapping: Team ID -> Total bet amount
         total_bets_amount: u64,
         team_ids: vector<u64>,
