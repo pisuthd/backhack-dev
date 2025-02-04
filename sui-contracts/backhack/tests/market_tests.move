@@ -19,6 +19,39 @@ module backhack::market_tests {
     const SUPPORTER_ADDR_3: address = @0x63;
     const SUPPORTER_ADDR_4: address = @0x64;
 
+
+    #[test]
+    public fun test_resolve_market() {
+        let mut scenario = scenario(); 
+
+        setup_market( &mut scenario, ADMIN_ADDR );
+        setup_odds(  &mut scenario, ADMIN_ADDR );
+
+        place_bet( &mut scenario, TEAM_ADDR_1, 1, 1_000000000); // Bets 1 SUI
+        place_bet( &mut scenario, TEAM_ADDR_2, 2, 1_000000000); // Bets 1 SUI
+
+        place_bet( &mut scenario, SUPPORTER_ADDR_1, 1, 1_000000000); // Bets 1 SUI
+        place_bet( &mut scenario, SUPPORTER_ADDR_2, 2, 1_000000000); // Bets 1 SUI
+        place_bet( &mut scenario, SUPPORTER_ADDR_3, 3, 1_000000000); // Bets 1 SUI
+        place_bet( &mut scenario, SUPPORTER_ADDR_4, 4, 1_000000000); // Bets 1 SUI
+
+        next_epoch(&mut scenario, ADMIN_ADDR);
+        next_epoch(&mut scenario, ADMIN_ADDR);
+        next_epoch(&mut scenario, ADMIN_ADDR);
+        
+        resolve_market( &mut scenario, ADMIN_ADDR );
+
+        claim_prizes( &mut scenario, TEAM_ADDR_1 ); // Receives 1.97 SUI
+        claim_prizes( &mut scenario, TEAM_ADDR_2 ); // Receives 1.02 SUI
+
+        claim_prizes( &mut scenario, SUPPORTER_ADDR_1 ); // Receives 1.97 SUI
+        claim_prizes( &mut scenario, SUPPORTER_ADDR_2 ); // Receives 1.02 SUI
+        claim_prizes( &mut scenario, SUPPORTER_ADDR_3 ); // Not receives
+        claim_prizes( &mut scenario, SUPPORTER_ADDR_4 ); // Not receives
+
+        test_scenario::end(scenario);
+    }
+
     #[test]
     public fun test_create_market() {
         let mut scenario = scenario(); 
@@ -40,40 +73,6 @@ module backhack::market_tests {
         test_scenario::end(scenario);
     }
 
-    #[test]
-    public fun test_resolve_market() {
-        let mut scenario = scenario(); 
-
-        setup_market( &mut scenario, ADMIN_ADDR );
-        setup_odds(  &mut scenario, ADMIN_ADDR );
-
-        place_bet( &mut scenario, TEAM_ADDR_1, 1, 1_000000000);
-        place_bet( &mut scenario, TEAM_ADDR_2, 2, 1_000000000);
-
-        place_bet( &mut scenario, SUPPORTER_ADDR_1, 1, 1_000000000);
-        place_bet( &mut scenario, SUPPORTER_ADDR_2, 2, 1_000000000);
-        place_bet( &mut scenario, SUPPORTER_ADDR_3, 3, 1_000000000);
-        place_bet( &mut scenario, SUPPORTER_ADDR_4, 4, 1_000000000);
-
-        next_epoch(&mut scenario, ADMIN_ADDR);
-        next_epoch(&mut scenario, ADMIN_ADDR);
-        next_epoch(&mut scenario, ADMIN_ADDR);
-        
-        resolve_market( &mut scenario, ADMIN_ADDR );
-
-        claim_prizes( &mut scenario, TEAM_ADDR_1 );
-        // claim_prizes( &mut scenario, TEAM_ADDR_2 );
-
-        // claim_prizes( &mut scenario, SUPPORTER_ADDR_1 );
-        // claim_prizes( &mut scenario, SUPPORTER_ADDR_2 );
-        // claim_prizes( &mut scenario, SUPPORTER_ADDR_3 );
-        // claim_prizes( &mut scenario, SUPPORTER_ADDR_4 );
-
-
-        test_scenario::end(scenario);
-
-    }
-
     public fun resolve_market(test: &mut Scenario, admin_address: address) {
 
         next_tx(test, admin_address);
@@ -82,7 +81,6 @@ module backhack::market_tests {
 
             market::resolve_market(
                 &mut global,
-                0,
                 0,
                 vector[1, 2, 1], // Team#1 gets Prize#1, Team#2 gets Prize#2, Team#1 gets Prize#3,
                 ctx(test)
@@ -122,7 +120,7 @@ module backhack::market_tests {
             market::update_prize_odds(
                 &mut global,
                 0,
-                vector[30000,20000,10000], // 3 prizes 
+                vector[15000,13000,10000], // 3 prizes with 1.5, 1.3, 1.0 odds
                 ctx(test)
             );
 
@@ -152,29 +150,45 @@ module backhack::market_tests {
 
     public fun claim_prizes(test: &mut Scenario, user_address: address) {
 
-        // next_tx(test, user_address);
-        // { 
-        //     let mut global = test_scenario::take_shared<MarketGlobal>(test);
+        next_tx(test, user_address);
+        { 
+            let mut global = test_scenario::take_shared<MarketGlobal>(test);
 
-        //     // Find the position ID belongs to the user
-        //     let mut position_id = 0;
-        //     let mut count = 0;
+            // Find the position ID belongs to the user
+            let mut position_id = 0;
+            let mut count = 0;
 
-        //     while (count < 6) {
-        //         let (_,_,_,holder,_,_) = market::get_bet_position( &global, count );
-        //         if (holder == user_address) {
-        //             position_id = count;
-        //             break
-        //         };
-        //         count = count+1;
-        //     };
+            while (count < 6) {
+                let (_,_,_,holder,_,_) = market::get_bet_position( &global, count );
+                if (holder == user_address) {
+                    position_id = count;
+                    break
+                };
+                count = count+1;
+            };
 
-        //     let payout_amount = market::check_payout_amount(&global, position_id);
+            market::claim_prize( &mut global, position_id, ctx(test) );
 
-        //     std::debug::print(&(payout_amount));
+            test_scenario::return_shared(global);  
+        };
 
-        //     test_scenario::return_shared(global);  
-        // };
+        if ( user_address != SUPPORTER_ADDR_3 && user_address != SUPPORTER_ADDR_4) {
+            // verify SUI received
+            next_tx(test, user_address);
+            { 
+                let sui_token = test_scenario::take_from_sender<Coin<SUI>>(test); 
+
+                if ( user_address == TEAM_ADDR_1 || user_address == SUPPORTER_ADDR_1) {
+                    assert!(coin::value(&(sui_token)) == 1_876315790, 101); // 1.87 SUI
+                };
+
+                if (user_address == TEAM_ADDR_2 || user_address == SUPPORTER_ADDR_2) {
+                    assert!(coin::value(&(sui_token)) == 1_023684211, 102); // 1.02 SUI
+                };
+                 
+                test_scenario::return_to_sender( test , sui_token );
+            };
+        };
 
     }
 
