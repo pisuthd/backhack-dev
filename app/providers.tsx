@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
+import { Amplify } from "aws-amplify";
+import "@aws-amplify/ui-react/styles.css";
 import { EnokiFlowProvider } from '@mysten/enoki/react';
 import {
     createNetworkConfig,
@@ -18,6 +20,10 @@ import "@mysten/dapp-kit/dist/index.css";
 import Loading from '@/components/Loading';
 import { registerStashedWallet } from "@mysten/zksend";
 import AccountProvider from "../contexts/account"
+import DatabaseProvider from "../contexts/database";
+import outputs from "@/amplify_outputs.json";
+
+Amplify.configure(outputs);
 
 const { networkConfig } = createNetworkConfig({
     testnet: { url: getFullnodeUrl("testnet") },
@@ -78,11 +84,13 @@ export function Providers({ children }: any) {
                     >
                         <EnokiFlowProvider apiKey={process.env.ENOKI_API_KEY || ""}>
                             <AccountProvider>
-                                {/* screen loader  */}
-                                {showLoader && (
-                                    <Loading />
-                                )}
-                                {children}
+                                <DatabaseProvider>
+                                    {/* screen loader  */}
+                                    {showLoader && (
+                                        <Loading />
+                                    )}
+                                    {children}
+                                </DatabaseProvider>
                             </AccountProvider>
                         </EnokiFlowProvider>
                     </WalletProvider>

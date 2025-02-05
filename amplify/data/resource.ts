@@ -17,6 +17,8 @@ const schema = a.schema({
       onchainId: a.integer(),
       title: a.string().required(),
       description: a.string(),
+      prizePool: a.string(),
+      period: a.string(),
       image: a.url(),
       urls: a.string().array(),
       status: a.enum(["UPCOMING", "ONGOING", "COMPLETED"]),

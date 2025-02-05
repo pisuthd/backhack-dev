@@ -2,13 +2,8 @@
 
 
 // import type { Schema } from "@/amplify/data/resource";
-import "./../app/app.css";
-import { Amplify } from "aws-amplify";
-import outputs from "@/amplify_outputs.json";
-import "@aws-amplify/ui-react/styles.css";
+ 
 import Landing from "@/components/Landing";
-
-Amplify.configure(outputs);
 
 export default function App() {
   // const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
