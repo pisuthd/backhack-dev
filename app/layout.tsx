@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={"antialiased font-sans"}>
         <Providers>
-          <div className="flex min-h-screen  flex-col bg-slate-50 text-base font-normal text-black w-full">
+          <div className="flex min-h-screen  flex-col bg-gray-950 text-base font-normal text-black w-full">
 
             <Header />
             <div className="flex-grow">
