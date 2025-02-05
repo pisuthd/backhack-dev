@@ -8,9 +8,8 @@ const Landing = () => {
     return (
         <>
             <Hero/>
-            <HackathonList/>
             <HowItWorks/>
-            
+            <HackathonList/>  
             <MakesPossible/>
         </>
     )

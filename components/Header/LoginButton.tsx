@@ -28,7 +28,7 @@ const LoginButton = () => {
                 maxWidth="max-w-sm"
             >
                 <p className="text-gray-300">
-                    Choose an available option below to sign in via zkLogin
+                    Choose an available option below to sign in
                 </p>
                 <div>
                     <button onClick={() => {

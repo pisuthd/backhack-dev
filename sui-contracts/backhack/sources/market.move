@@ -163,7 +163,7 @@ module backhack::market {
         // Ensure the market is still active and accepting bets
         assert!( market.is_resolved == false, ERR_ALREADY_RESOLVED );
         assert!( market.is_paused == false, ERR_PAUSED );
-        assert!( market.end_time > tx_context::epoch(ctx) , ERR_MARKET_CLOSED );
+        // assert!( market.end_time > tx_context::epoch(ctx) , ERR_MARKET_CLOSED );
         
         // Deposit the SUI bet into the market's contract
         balance::join(&mut market.balance, coin::into_balance(sui));
@@ -221,7 +221,7 @@ module backhack::market {
         
         let market = table::borrow_mut( &mut global.markets , current_position.market_id );
 
-        assert!( tx_context::epoch(ctx) >= market.end_time, ERR_MARKET_NOT_CLOSED );
+        // assert!( tx_context::epoch(ctx) >= market.end_time, ERR_MARKET_NOT_CLOSED );
         assert!( market.is_paused == false, ERR_PAUSED );
 
         // If there is a payout amount to be claimed

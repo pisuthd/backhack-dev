@@ -14,18 +14,28 @@ const Provider = ({ children }: any) => {
     const [values, dispatch] = useReducer(
         (curVal: any, newVal: any) => ({ ...curVal, ...newVal }),
         {
-            userData: undefined
+            userData: undefined,
+            hackathons: []
         }
     )
 
-    const { userData } = values
+    const { userData , hackathons} = values
 
     useEffect(() => {
         isConnected && loadUser(user)
     }, [isConnected, user])
 
+    useEffect(() => {
+        loadHackathons()
+    }, [])
+
+    const loadHackathons = useCallback(async () => {
+        const hackathons = await client.models.Hackathon.list() 
+        dispatch({ hackathons: hackathons.data })
+    }, [])
+
     const loadUser = useCallback(async (user: any) => {
- 
+
         if (user && user.email) {
 
             const { email } = user
@@ -37,7 +47,7 @@ const Provider = ({ children }: any) => {
                     }
                 }
             })
- 
+
             if (entry.data.length === 0) {
                 const newUser: any = {
                     username: email,
@@ -45,12 +55,12 @@ const Provider = ({ children }: any) => {
                     comments: [],
                     positions: [],
                     role: "USER"
-                } 
+                }
                 await client.models.User.create({
                     ...newUser
                 })
                 dispatch({ userData: newUser })
-            } else { 
+            } else {
                 dispatch({ userData: entry.data[0] })
             }
         }
@@ -59,9 +69,11 @@ const Provider = ({ children }: any) => {
 
     const databaseContext = useMemo(
         () => ({
-            userData
+            userData,
+            hackathons
         }), [
-        userData
+        userData,
+        hackathons
     ])
 
     return (

@@ -25,10 +25,13 @@ const Header = () => {
           </Link>
           <Link href="/hackathons" className={`  ${path === "/hackathons" ? "text-purple-400" : "hover:text-purple-400"} `}>
             Hackathons
-          </Link> 
-          <Link href="/betting" className={`  ${path === "/betting" ? "text-purple-400" : "hover:text-purple-400"} `}>
-            Betting
           </Link>
+          <Link href="/teams" className={`  ${path === "/teams" ? "text-purple-400" : "hover:text-purple-400"} `}>
+            Teams
+          </Link>
+          {/* <Link href="/betting" className={`  ${path === "/betting" ? "text-purple-400" : "hover:text-purple-400"} `}>
+            Betting
+          </Link> */}
         </nav>
 
         {/* Connect Wallet Button */}
@@ -49,10 +52,13 @@ const Header = () => {
             </Link>
             <Link href="/hackathons" className="hover:text-purple-400 transition">
               Hackathons
-            </Link> 
-            <Link href="/betting" className="hover:text-purple-400 transition">
-              Betting
             </Link>
+            <Link href="/teams" className="hover:text-purple-400 transition">
+              Teams
+            </Link>
+            {/* <Link href="/betting" className="hover:text-purple-400 transition">
+              Betting
+            </Link> */}
             <LoginButton />
           </nav>
         </div>

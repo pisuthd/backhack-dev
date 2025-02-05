@@ -3,15 +3,15 @@ import { useContext } from "react"
 import { ArrowRight } from "react-feather"
 
 
-const HackathonList = () => {
+const AllHackathonList = () => {
 
     const { hackathons }: any = useContext(DatabaseContext)
 
     return (
-        <section className="bg-gray-950 text-white py-12 text-center">
+        <section className="bg-gray-950 text-white text-center">
             <div className="max-w-4xl mx-auto mb-[40px]">
                 <h2 className="text-4xl font-bold text-purple-400">
-                    Featured Hackathons
+                    All Hackathons
                 </h2>
             </div>
 
@@ -34,14 +34,8 @@ const HackathonList = () => {
                                             <ArrowRight />
                                         </div>
                                     </div>
-                                </div>
-
-                            </div>
-
-                            {/* <h3 className="text-xl font-semibold text-purple-400">{item.title}</h3>
-                            <p className="text-gray-400 mt-2">🏆 {item.prizePool} Prize Pool | 🗓 {item.period}</p>
-                            <p className="text-gray-300 mt-2">{item.description}</p>
-                            <a href="#" className="mt-4 inline-block bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded-lg transition">View Details</a> */}
+                                </div> 
+                            </div> 
                         </div>
                     )
                 })
@@ -54,4 +48,4 @@ const HackathonList = () => {
     )
 }
 
-export default HackathonList
+export default AllHackathonList

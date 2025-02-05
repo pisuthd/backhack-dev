@@ -25,9 +25,9 @@ const Hero = () => (
                         Learn More
                     </a>
                 </div>
-                {/* <div className="mt-6 sm:mt-8  text-gray-300 text-sm ">
-                We're in the early stages of development and currently live on the Sui Testnet
-                </div> */}
+                <div className="mt-4 sm:mt-6  text-sm font-semibold text-purple-400 ">
+               Now live on Sui Testnet
+                </div>
             </div>
         </section>
         {/* <section className="bg-slate-100 border-b border-gray-300">
