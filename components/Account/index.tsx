@@ -21,7 +21,7 @@ const Account = () => {
         <div className="flex h-screen w-full justify-center pt-24 px-4 text-gray-300">
             <div className="w-full max-w-md">
                 <TabGroup>
-                    <TabList className="flex gap-4"> 
+                    <TabList className="flex gap-4">
                         {["Overview", "Positions"].map((name) => (
                             <Tab
                                 key={name}
@@ -52,27 +52,30 @@ const Account = () => {
                                 </div>
                                 <div>
                                     <p className="mt-4 mb-0 text-gray-400">Wallet Address:</p>
-                                    <CopyToClipboard
-                                        text={address}
-                                    >
-                                        <span className="cursor-pointer hover:opacity-60 flex flex-row ">
-                                            <FaRegCopy className="mr-1 my-auto" />
-                                            {shortText(address, 8, -6)}
-
-                                        </span>
-                                    </CopyToClipboard>
+                                    {address && (
+                                        <CopyToClipboard
+                                            text={address}
+                                        >
+                                            <span className="cursor-pointer hover:opacity-60 flex flex-row ">
+                                                <FaRegCopy className="mr-1 my-auto" />
+                                                {shortText(address, 8, -6)}
+                                            </span>
+                                        </CopyToClipboard>
+                                    )}
                                 </div>
                                 <div>
                                     <p className="mt-4 mb-0 text-gray-400">Balance:</p>
-                                    <p>
-                                        {(balance).toLocaleString()} SUI
-                                    </p>
+                                    {balance && (
+                                        <p>
+                                            {(balance).toLocaleString()} SUI
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="col-span-2">
                                     <p className="text-sm text-left mt-2">
-                                        More Testnet SUI can be request from the <a href="https://docs.sui.io/guides/developer/getting-started/get-coins" className='underline' target="_blank">faucet</a>
+                                        More Testnet SUI can be request from <a href="https://docs.sui.io/guides/developer/getting-started/get-coins" className='underline' target="_blank">faucet</a>
                                     </p>
-                                </div> 
+                                </div>
                             </div>
                         </TabPanel>
                         <TabPanel className="rounded-xl bg-white/5 p-3">
