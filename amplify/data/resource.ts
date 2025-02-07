@@ -38,8 +38,7 @@ const schema = a.schema({
       user: a.belongsTo('User', "userId"),
       hackathon: a.belongsTo('Hackathon', "hackathonId"),
       rating: a.integer(),
-      content: a.string(),
-      createdDate: a.datetime()
+      content: a.string()
     }).authorization((allow) => [allow.publicApiKey()]),
     Position: a.model({
       hackathonId: a.id().required(),
@@ -52,8 +51,7 @@ const schema = a.schema({
       hidden: a.boolean(),
       status: a.enum(["PENDING", "WIN", "LOSE", "CANCELLED"]),
       walletAddress: a.string(),
-      epoch: a.integer(),
-      createdDate: a.datetime()
+      epoch: a.integer()
     }).authorization((allow) => [allow.publicApiKey()]),
     Team: a.model({
       hackathonId: a.id().required(),
@@ -64,7 +62,6 @@ const schema = a.schema({
       image: a.url(),
       github: a.url(),
       socials: a.url().array(),
-      createdDate: a.datetime(),
       comments: a.hasMany('Review', "teamId"),
     }).authorization((allow) => [allow.publicApiKey()]),
     Review: a.model({
@@ -73,8 +70,7 @@ const schema = a.schema({
       reviewer: a.string(),
       overallScore: a.integer(),
       feedback: a.string(),
-      improvementSuggestions: a.string().array(),
-      reviewDate: a.datetime()
+      improvementSuggestions: a.string().array()
     }).authorization((allow) => [allow.publicApiKey()]),
     Prize: a.model({
       hackathonId: a.id().required(),
@@ -83,8 +79,7 @@ const schema = a.schema({
       title: a.string().required(),
       description: a.string(),
       image: a.url(),
-      odds: a.integer(),
-      createdDate: a.datetime()
+      odds: a.integer()
     }).authorization((allow) => [allow.publicApiKey()])
 });
 

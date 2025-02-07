@@ -16,7 +16,10 @@ const Header = () => {
     <header className="bg-gray-950 text-white py-4 shadow-lg fixed w-full top-0 z-50">
       <div className="max-w-6xl mx-auto flex justify-between items-center px-6">
         {/* Logo */}
-        <img src="/images/backhack-logo.png" alt="Logo" className="h-[65px]" />
+        <Link href="/">
+          <img src="/images/backhack-logo.png" alt="Logo" className="h-[65px]" />
+        </Link>
+
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-[40px]   ">

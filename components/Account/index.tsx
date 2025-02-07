@@ -22,7 +22,7 @@ const Account = () => {
             <div className="w-full max-w-md">
                 <TabGroup>
                     <TabList className="flex gap-4">
-                        {["Overview", "Positions"].map((name) => (
+                        {["Overview", "Hackathons"].map((name) => (
                             <Tab
                                 key={name}
                                 className="rounded-full cursor-pointer py-2 px-6 text-base  text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white"

@@ -26,7 +26,7 @@ export default function HowItWorks() {
             <div className="max-w-4xl mx-auto">
                 <h2 className="text-4xl font-bold text-purple-400">How It Works</h2>
                 <p className="mt-4 text-lg text-gray-300">
-                    Simple steps to add more fun while participating in hackathons.
+                    Simple steps to add more fun while participating in hackathons
                 </p>
             </div>
 
