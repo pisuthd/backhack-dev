@@ -29,9 +29,12 @@ const Header = () => {
           <Link href="/hackathons" className={`  ${path === "/hackathons" ? "text-purple-400" : "hover:text-purple-400"} `}>
             Hackathons
           </Link>
-          <Link href="/teams" className={`  ${path === "/teams" ? "text-purple-400" : "hover:text-purple-400"} `}>
-            Teams
+          <Link href="https://github.com/pisuthd/backhack-dev" target="_blank" className={`  hover:text-purple-400 `}>
+            Github
           </Link>
+          {/* <Link href="/teams" className={`  ${path === "/teams" ? "text-purple-400" : "hover:text-purple-400"} `}>
+            Teams
+          </Link> */}
           {/* <Link href="/betting" className={`  ${path === "/betting" ? "text-purple-400" : "hover:text-purple-400"} `}>
             Betting
           </Link> */}
@@ -56,9 +59,9 @@ const Header = () => {
             <Link href="/hackathons" className="hover:text-purple-400 transition">
               Hackathons
             </Link>
-            <Link href="/teams" className="hover:text-purple-400 transition">
+            {/* <Link href="/teams" className="hover:text-purple-400 transition">
               Teams
-            </Link>
+            </Link> */}
             {/* <Link href="/betting" className="hover:text-purple-400 transition">
               Betting
             </Link> */}

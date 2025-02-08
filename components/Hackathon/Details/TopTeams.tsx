@@ -1,6 +1,22 @@
 
 
-const TopTeams = () => {
+const TopTeams = ({ teams, positions }: any) => {
+
+    const teamsWithBets = teams.map((team: any ) => {
+        
+        const totalBets = positions.reduce((result: any, item: any) => {
+            if (item.predictedTeam === team.onchainId) {
+                result = result + Number(item.betAmount)
+            }
+            return result
+        }, 0)
+        
+        return {
+            name: team.name,
+            totalBets
+        }
+    })
+
     return (
         <div className="p-6 px-0 sm:px-2">
             <h3 className="text-2xl font-bold">🔥 Top Teams</h3>
@@ -13,16 +29,24 @@ const TopTeams = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="border-b">
-                        <td className="py-2 px-4">🚀 MoonBuilders</td>
-                        <td className="py-2 px-4">120 SUI</td>
-                        <td className="py-2 px-4 font-bold text-indigo-600">4.5x</td>
-                    </tr>
-                    <tr className="border-b">
-                        <td className="py-2 px-4">⚡ ChainMasters</td>
-                        <td className="py-2 px-4">90 SUI</td>
-                        <td className="py-2 px-4 font-bold text-indigo-600">3.2x</td>
-                    </tr>
+                    { teamsWithBets.sort((a: any, b: any) => b.totalBets - a.totalBets).map((team: any, index: number) => {
+
+                        if (team.totalBets === 0) {
+                            return
+                        }
+
+                        if (index > 4) {
+                            return
+                        }
+
+                        return (
+                            <tr key={index} className="border-b border-gray-200">
+                                <td className="py-2 px-4">{team.name}</td>
+                                <td className="py-2 px-4">{(team.totalBets).toLocaleString()}{` SUI`}</td>
+                                <td className="py-2 px-4">XXX</td>
+                            </tr>
+                        )
+                    })} 
                 </tbody>
             </table>
         </div>

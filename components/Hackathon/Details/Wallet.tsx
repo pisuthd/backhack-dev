@@ -4,10 +4,15 @@ import { AccountContext } from "@/contexts/account"
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { FaRegCopy } from "react-icons/fa6";
 import { shortText } from '@/helpers'
+import { DatabaseContext } from '@/contexts/database';
+import { Result } from 'aws-cdk-lib/aws-stepfunctions';
 
-const WalletPanel = () => {
+const WalletPanel = ({ positions, teams }: any) => {
 
-    const { isConnected }: any = useContext(AccountContext)
+    const { isConnected, user }: any = useContext(AccountContext)
+    const { userData }: any = useContext(DatabaseContext)
+
+    const myPositions = userData ? positions.filter((item: any) => item.userId === userData.id) : []
 
     return (
         <div className='py-6 pr-6 flex-grow'>
@@ -25,13 +30,18 @@ const WalletPanel = () => {
                 <TabPanels className="mt-3 h-full  ">
                     <TabPanel className="rounded-xl h-full bg-gray-900 p-3 ">
                         {!isConnected && (<Unauthorised />)}
-                        {isConnected && (<Overview />)}
+                        {isConnected && (<Overview positions={myPositions} />)}
                     </TabPanel>
                     <TabPanel className="rounded-xl h-full bg-gray-900 p-3">
                         {!isConnected && (<Unauthorised />)}
+                        {isConnected && (<MyPositions positions={myPositions} teams={teams} />)}
                     </TabPanel>
                     <TabPanel className="rounded-xl h-full bg-gray-900 p-3">
                         {!isConnected && (<Unauthorised />)}
+                        {isConnected && (<div className="h-full w-full flex">
+                            <h2 className='m-auto text-xl font-bold'> Coming Soon</h2>
+                           
+                        </div>)}
                     </TabPanel>
 
                 </TabPanels>
@@ -40,7 +50,7 @@ const WalletPanel = () => {
     )
 }
 
-const Overview = () => {
+const Overview = ({ positions }: any) => {
 
     const { user, logout, address, isConnected, getBalance }: any = useContext(AccountContext)
 
@@ -50,8 +60,20 @@ const Overview = () => {
         isConnected && getBalance().then(setBalance)
     }, [isConnected])
 
+    const recent = positions.reduce((result: any, item: any) => {
+        if ((new Date(item.createdAt)).valueOf() > result) {
+            result = (new Date(item.createdAt)).valueOf()
+        }
+        return result
+    }, 0)
+
+    const totalBets = positions.reduce((result: any, item: any) => {
+        result = result + Number(item.betAmount)
+        return result
+    }, 0)
+
     return (
-        <div className="   p-4 px-2  h-full grid grid-cols-4 gap-3">
+        <div className="p-4 px-2  grid grid-cols-4 gap-5">
             <div className='col-span-2'>
                 <p className="  text-gray-400">Wallet Address:</p>
                 {address && (
@@ -80,6 +102,57 @@ const Overview = () => {
                 )}
             </div>
 
+            <div className='col-span-2'>
+                <p className="  text-gray-400">Recent Activity:</p>
+                <p>
+                    {recent === 0 ? "No recent activity" : (new Date(recent)).toLocaleString()}
+                </p>
+            </div>
+            <div>
+                <p className="  text-gray-400">Total Positions:</p>
+                <p>
+                    {positions.length}
+                </p>
+            </div>
+            <div>
+                <p className="  text-gray-400">Total Bets:</p>
+                <p>
+                    {totalBets.toLocaleString()}{` SUI`}
+                </p>
+            </div>
+
+        </div>
+    )
+}
+
+const MyPositions = ({ positions, teams }: any) => {
+    return (
+        <div className=" px-2 overflow-y-auto">
+            <table className="w-full">
+                <thead>
+                    <tr className="text-left  ">
+                        <th className="py-2 px-4">Predicted Team</th>
+                        <th className="py-2 px-4">Bet Amount</th>
+                        <th className="py-2 px-4">Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {positions.map((position: any, index: number) => { 
+                        const team = teams.find((item: any) => item.onchainId === position.predictedTeam) 
+                        return (
+                            <tr className="border-b" key={index}>
+                                <td className="py-2 px-4">
+                                    {team && team.name}
+                                </td>
+                                <td className="py-2 px-4">{position.betAmount} SUI</td>
+                                <td className="py-2 px-4">
+                                    {(new Date(position.createdAt)).toLocaleString()}
+                                </td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
         </div>
     )
 }

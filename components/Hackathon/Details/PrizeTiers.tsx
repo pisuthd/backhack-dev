@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
+import BigNumber from "bignumber.js"
 
-
-const PrizeTiers = ({ hackathon }: any) => {
+const PrizeTiers = ({ hackathon, onchainData }: any) => {
 
     const [prizes, setPrizes] = useState([])
 
@@ -14,8 +14,11 @@ const PrizeTiers = ({ hackathon }: any) => {
 
     }, [hackathon])
 
+    let totalBetsAmount = 0
 
-
+    if (onchainData) {
+        totalBetsAmount = Number(BigNumber(onchainData.totalBetsAmount).dividedBy(10 ** 9))
+    }
 
     return (
         <div className="p-6   px-0 sm:px-2">
@@ -31,13 +34,15 @@ const PrizeTiers = ({ hackathon }: any) => {
                 <tbody>
                     {prizes.sort(function (a: any, b: any) {
                         return Number(a.onchainId) - Number(b.onchainId)
-                    }).map((item: any, index: number) => { 
+                    }).map((item: any, index: number) => {
                         const odds = `${(item.odds / 100).toFixed(0)}%`
+                        const allocation = totalBetsAmount*(item.odds/10000)
+
                         return (
                             <tr key={index} className="border-b">
                                 <td className="py-2  ">{item.title}</td>
                                 <td className="py-2  ">{odds}</td>
-                                <td className="py-2  font-bold text-purple-400">0 SUI</td>
+                                <td className="py-2  font-bold text-purple-400">{allocation.toLocaleString()} SUI</td>
                             </tr>
                         )
                     })

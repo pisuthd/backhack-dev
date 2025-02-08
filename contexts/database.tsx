@@ -36,17 +36,37 @@ const Provider = ({ children }: any) => {
 
     const addTeam = useCallback(async ({ hackathonId, teamId, name, description }: any) => {
 
-        console.log("hackathonId --> ", hackathonId)
-
-
-        const team = await client.models.Team.create({
+        await client.models.Team.create({
             hackathonId,
             name,
             description,
             onchainId: teamId
         })
 
-        console.log(team)
+        loadHackathons()
+
+    }, [])
+
+    const addPosition = useCallback(async ({ hackathonId, userId, teamId, betAmount }: any) => {
+
+        const { data } = await client.models.Position.list()
+
+        const maxTeamId = data.reduce((result: number, item: any) => {
+            if (item.onchainId > result) {
+                result = item.onchainId
+            }
+            return result
+        }, 0)
+
+        const onchainId = maxTeamId + 1
+
+        await client.models.Position.create({
+            userId,
+            hackathonId,
+            onchainId,
+            predictedTeam: teamId,
+            betAmount
+        })
 
         loadHackathons()
 
@@ -85,11 +105,27 @@ const Provider = ({ children }: any) => {
 
     }, [])
 
+    const getPositions = useCallback(async (hackathonId: string) => {
+
+        const { data } = await client.models.Position.list({
+            filter: {
+                hackathonId: {
+                    eq: hackathonId
+                }
+            }
+        })
+
+        return data
+
+    }, [])
+
     const databaseContext = useMemo(
         () => ({
             userData,
             hackathons,
-            addTeam
+            addTeam,
+            addPosition,
+            getPositions
         }), [
         userData,
         hackathons

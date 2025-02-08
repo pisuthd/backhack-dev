@@ -1,30 +1,46 @@
 
+import { AccountContext } from "@/contexts/account"
 import AddNewTeamModal from "@/modals/addNewTeam"
-import { useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
+import BetModal from "@/modals/bet"
 
 enum MODAL {
     NONE,
     ADD_NEW_TEAM,
-    REVIEW
+    REVIEW,
+    BET
 }
 
-const AllTeams = ({ hackathon }: any) => {
+const AllTeams = ({ hackathon, teams, positions }: any) => {
+
+    const { isConnected }: any = useContext(AccountContext)
 
     const [modal, setModal] = useState<MODAL>(MODAL.NONE)
 
-    const [teams, setTeams] = useState([])
+    const [currentTeam, setCurrentTeam] = useState(undefined)
 
-    useEffect(() => {
 
-        (async () => {
-            const { data } = await hackathon.teams()
-            setTeams(data)
-        })()
+    const onBet = useCallback(async (currentTeam: any) => {
 
-    }, [hackathon])
+        if (!isConnected) {
+            alert("Please login to continue")
+            return
+        }
+
+        setCurrentTeam(currentTeam)
+        setModal(MODAL.BET)
+
+    }, [isConnected])
 
     return (
         <>
+
+            <BetModal
+                visible={modal === MODAL.BET}
+                close={() => setModal(MODAL.NONE)}
+                currentTeam={currentTeam}
+                currentHackathon={hackathon}
+            />
 
             <AddNewTeamModal
                 visible={modal === MODAL.ADD_NEW_TEAM}
@@ -50,9 +66,9 @@ const AllTeams = ({ hackathon }: any) => {
                                     </a>
                                 )
                             })}
-                            { hackathon.urls.length === 0 && <p>Not available</p>}
+                            {hackathon.urls.length === 0 && <p>Not available</p>}
                         </div>
- 
+
                     </div>
                     <div className="  flex flex-row space-x-3">
                         <button onClick={() => setModal(MODAL.ADD_NEW_TEAM)} className="my-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
@@ -60,7 +76,7 @@ const AllTeams = ({ hackathon }: any) => {
                         </button>
                         <button onClick={() => setModal(MODAL.ADD_NEW_TEAM)} className="my-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
                             Add New Team
-                        </button> 
+                        </button>
                         <button onClick={() => alert()} className="my-auto ml-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
                             Review All
                         </button>
@@ -72,30 +88,44 @@ const AllTeams = ({ hackathon }: any) => {
 
                     {teams.sort(function (a: any, b: any) {
                         return Number(a.onchainId) - Number(b.onchainId)
-                    }).map((team: any, index: number) => (
-                        <div key={index} className="bg-gray-900  p-5 rounded-lg shadow-lg">
-                            <div className="flex justify-between">
-                                <h2 className="text-xl font-semibold">{team.name}</h2>
-                                <span className="text-purple-400 font-bold my-auto">Scores: 40%</span>
-                            </div>
+                    }).map((team: any, index: number) => {
 
-                            <p className="text-gray-500 line-clamp-2 my-1">{team.description}</p>
-                            <div className="mt-3 flex justify-between">
-                                <span className="text-purple-400 font-bold my-auto">🎲 10 SUI</span>
-                                <span className="text-purple-400 font-bold my-auto">Reviews (3)</span>
-                                <button className="bg-purple-600 cursor-pointer text-white px-4 my-auto py-2 rounded-lg hover:bg-purple-500">Bet Now</button>
-                            </div>
-                        </div>
-                    ))}
+                        const totalBets = positions.reduce((result: any, item: any) => {
+                            if (item.predictedTeam === team.onchainId) {
+                                result = result + Number(item.betAmount)
+                            }
+                            return result
+                        }, 0)
 
-                    {/* <div className="bg-gray-900  p-5 rounded-lg shadow-lg">
-                    <h2 className="text-xl font-semibold">⚡ ChainMasters</h2>
-                    <p className="text-gray-500">Members: Dave, Eve, Frank</p>
-                    <div className="mt-3 flex justify-between">
-                        <span className="text-indigo-600 font-bold">Odds: 3.2x</span>
-                        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Bet Now</button>
-                    </div>
-                </div> */}
+                        return (
+                            (
+                                <div key={index} className="bg-gray-900    p-5 rounded-lg shadow-lg">
+                                    <div className="flex justify-between">
+                                        <h2 className="text-xl font-semibold">{team.name}</h2>
+                                        <span className="text-purple-400 font-bold my-auto">Scores: 40%</span>
+                                    </div>
+
+                                    <p className="text-gray-500 line-clamp-2 my-1">{team.description}</p>
+                                    <div className="mt-3 flex justify-between">
+                                        <span className="  font-bold my-auto">🔥 {totalBets.toLocaleString()} SUI</span>
+                                        <span
+                                            onClick={() => {
+                                                onBet(team)
+                                            }}
+                                            className="text-purple-400 font-bold my-auto cursor-pointer hover:underline">
+                                            Reviews (3)
+                                        </span>
+                                        <button
+                                            className="bg-purple-600 cursor-pointer text-white px-4 my-auto py-2 rounded-lg hover:bg-purple-500"
+                                            onClick={() => {
+                                                onBet(team)
+                                            }}
+                                        >Bet Now</button>
+                                    </div>
+                                </div>
+                            )
+                        )
+                    })}
                 </div>
 
             </div>

@@ -21,6 +21,7 @@ import Loading from '@/components/Loading';
 import { registerStashedWallet } from "@mysten/zksend";
 import AccountProvider from "../contexts/account"
 import DatabaseProvider from "../contexts/database";
+import MarketProvider from "../contexts/market";
 import outputs from "@/amplify_outputs.json";
 
 Amplify.configure(outputs);
@@ -85,11 +86,13 @@ export function Providers({ children }: any) {
                         <EnokiFlowProvider apiKey={process.env.ENOKI_API_KEY || ""}>
                             <AccountProvider>
                                 <DatabaseProvider>
-                                    {/* screen loader  */}
-                                    {showLoader && (
-                                        <Loading />
-                                    )}
-                                    {children}
+                                    <MarketProvider>
+                                        {/* screen loader  */}
+                                        {showLoader && (
+                                            <Loading />
+                                        )}
+                                        {children}
+                                    </MarketProvider>
                                 </DatabaseProvider>
                             </AccountProvider>
                         </EnokiFlowProvider>
