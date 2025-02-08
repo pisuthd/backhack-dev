@@ -56,17 +56,12 @@ const PreviewCard = ({
                 <div className="col-span-3 p-6 pl-0 text-left flex flex-col">
                     <h3 className="text-xl font-semibold text-purple-400">{item.title}</h3>
                     <p className="text-gray-300 mt-2">{item.description}</p>
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-4 mt-auto mb-1">
                         <p className="text-gray-400 mt-2">📅 {countdown}</p>
                         <p className="text-gray-400 mt-2">🔥 {totalTeams} Teams</p>
                         <p className="text-gray-400 mt-2">⚡ {totalBets} SUI Bets</p>
                     </div>
-
-                    <div className="mt-auto flex  text-secondary">
-                        <div className="duration-300 ml-auto text-purple-400 group-hover:translate-x-2 rtl:rotate-180 rtl:group-hover:-translate-x-2">
-                            <ArrowRight />
-                        </div>
-                    </div>
+ 
                 </div>
             </div>
         </Link>
