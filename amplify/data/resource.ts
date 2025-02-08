@@ -95,8 +95,7 @@ const schema = a.schema({
     })
     .returns(
       a.customType({
-        teams: a.string().array(),
-        descriptions: a.string().array()
+        team: a.string().array()
       })
     )
     .authorization((allow) => allow.publicApiKey()),

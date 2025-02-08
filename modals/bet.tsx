@@ -116,48 +116,6 @@ const BetModal = ({ visible, close, currentTeam, currentHackathon }: any) => {
 
                     </div>
 
-                    {/* <div className="grid grid-cols-5 gap-3">
-
-
-
-                        <div className="col-span-3 flex flex-col py-4  ">
-                            <h2 className=" ">Description:</h2>
-                            <p className="text-gray-400  ">
-                                {currentTeam.description}
-                            </p>
-                        </div> 
-
-                        <div className="col-span-2 pl-4 py-4 ">
-
-                            <div className="px-2  ">
-                                <h2 className="mb-2">Amount:</h2>
-                                <div className="flex flex-row"> 
-                                    <input type="number" step={0.1} value={amount} onChange={(e) => setState({ amount: Number(e.target.value) })} id="amount" className={`block w-full p-2  rounded-lg text-base bg-[#141F32] border border-neutral-600 placeholder-gray text-white focus:outline-none`} />
-                                    <div className="my-auto   mx-4">
-                                        SUI
-                                    </div>
-                                </div>
-                                <div className="text-sm mt-2 text-gray-400">
-                                    Balance: {(balance).toLocaleString()} SUI
-                                </div>
-
-                            </div>
-
-
-                            <div className="flex flex-col gap-2">
-                                <label htmlFor="amount">Amount</label>
-                                <input type="number" name="amount" id="amount" className="border border-gray-300 rounded-md p-2" onChange={(e) => setState({ amount: Number(e.target.value) })} />
-                            </div>
-                            <button className="bg-blue-500 text-white rounded-md p-2"
-                            // onClick={handleBet}
-                            >Bet</button> 
-
-                        </div>
-
-
-                    </div>*/}
-
-
 
                 </div>
             )

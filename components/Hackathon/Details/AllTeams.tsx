@@ -3,10 +3,12 @@ import { AccountContext } from "@/contexts/account"
 import AddNewTeamModal from "@/modals/addNewTeam"
 import { useCallback, useContext, useEffect, useState } from "react"
 import BetModal from "@/modals/bet"
+import FetchTeamsModal from "@/modals/fetchTeams"
 
 enum MODAL {
     NONE,
     ADD_NEW_TEAM,
+    FETCH_TEAMS,
     REVIEW,
     BET
 }
@@ -48,6 +50,12 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
                 hackathon={hackathon}
             />
 
+            <FetchTeamsModal
+                visible={modal === MODAL.FETCH_TEAMS}
+                close={() => setModal(MODAL.NONE)}
+                hackathon={hackathon}
+            />
+
             <div className="p-6 mt-[20px] px-0">
                 <h3 className="text-2xl font-bold  ">All Teams</h3>
 
@@ -71,14 +79,14 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
 
                     </div>
                     <div className="  flex flex-row space-x-3">
-                        <button onClick={() => setModal(MODAL.ADD_NEW_TEAM)} className="my-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
+                        <button onClick={() => setModal(MODAL.FETCH_TEAMS)} className="my-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
                             Fetch Teams from Official Source
                         </button>
                         <button onClick={() => setModal(MODAL.ADD_NEW_TEAM)} className="my-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
                             Add New Team
                         </button>
                         <button onClick={() => alert()} className="my-auto ml-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
-                            Review All
+                            Review Team
                         </button>
                     </div>
 
@@ -87,7 +95,7 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
 
 
                     {teams.sort(function (a: any, b: any) {
-                        return Number(a.onchainId) - Number(b.onchainId)
+                        return Number(b.onchainId) - Number(a.onchainId)
                     }).map((team: any, index: number) => {
 
                         const totalBets = positions.reduce((result: any, item: any) => {
@@ -102,7 +110,7 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
                                 <div key={index} className="bg-gray-900    p-5 rounded-lg shadow-lg">
                                     <div className="flex justify-between">
                                         <h2 className="text-xl font-semibold">{team.name}</h2>
-                                        <span className="text-purple-400 font-bold my-auto">Scores: 40%</span>
+                                        {/* <span className="text-purple-400 font-bold my-auto">Scores: 40%</span> */}
                                     </div>
 
                                     <p className="text-gray-500 line-clamp-2 my-1">{team.description}</p>

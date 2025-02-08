@@ -74,7 +74,7 @@ const AddNewTeamModal = ({ visible, close, hackathon }: any) => {
                 <input type="text" value={name} onChange={(e) => dispatch({ name: e.target.value })} id="title" placeholder="Ex. Slatan BTC" className={`block w-full p-2  rounded-lg text-base bg-[#141F32] border border-neutral-600 placeholder-gray text-white focus:outline-none`} />
                 <h2 className="my-2">Description:</h2>
                 <textarea rows={3} value={description} onChange={(e) => dispatch({ description: e.target.value })} id="description" placeholder="Provide a short description for further review by the AI agent" className={`block w-full p-2  rounded-lg text-base bg-[#141F32] border border-neutral-600 placeholder-gray text-white focus:outline-none`} />
-                <p className="text-gray mt-2 px-0.5 text-base">In the hackathon version, anyone can freely add a team and its details. However, we may remove entries that appear suspicious.</p>
+                <p className="text-purple-400/90 text-center mt-2 px-0.5 text-sm">In the hackathon version, anyone can freely add a team and its details. However, we may remove entries that appear suspicious.</p>
             </div>
 
             <div className="mt-2 flex   flex-row">

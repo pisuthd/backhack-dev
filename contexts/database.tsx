@@ -1,11 +1,16 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from "react"
 import { AccountContext } from "./account"
+import FirecrawlApp from '@mendable/firecrawl-js';
 import { generateClient } from "aws-amplify/data";
 import type { Schema } from "../amplify/data/resource"
 
 export const DatabaseContext = createContext({})
 
 const client = generateClient<Schema>();
+
+const FIRECRAWL_API_KEY = process.env.FIRECRAWL_API_KEY || ""
+
+const app = new FirecrawlApp({ apiKey: FIRECRAWL_API_KEY });
 
 const Provider = ({ children }: any) => {
 
@@ -118,11 +123,18 @@ const Provider = ({ children }: any) => {
         return data
 
     }, [])
+    
+
+    const crawl = async (url: any) => {
+        const result: any = (await app.scrapeUrl(url, { formats: ['markdown', 'html'] }))
+        return result.markdown
+    }
 
     const databaseContext = useMemo(
         () => ({
             userData,
             hackathons,
+            crawl,
             addTeam,
             addPosition,
             getPositions

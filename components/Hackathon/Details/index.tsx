@@ -38,10 +38,13 @@ const HackathonDetails = ({ slug }: IHackathonDetails) => {
     }, [hackathon])
 
     useEffect(() => {
-        (async () => {
-            const result = await hackathon.teams()
-            setTeams(result.data)
-        })()
+        if (hackathon) {
+            (async () => {
+                const result = await hackathon.teams()
+                setTeams(result.data)
+            })()
+        }
+
     }, [hackathon])
 
     useEffect(() => {
@@ -60,6 +63,7 @@ const HackathonDetails = ({ slug }: IHackathonDetails) => {
                         <Overview
                             hackathon={hackathon}
                             positions={positions}
+                            teams={teams}
                         />
                         <Wallet
                             positions={positions}
@@ -72,7 +76,7 @@ const HackathonDetails = ({ slug }: IHackathonDetails) => {
                             hackathon={hackathon}
                             onchainData={onchainData}
                         />
-                        <TopTeams 
+                        <TopTeams
                             teams={teams}
                             positions={positions}
                         />

@@ -2,7 +2,7 @@
 import { secondsToDDHHMMSS, slugify } from "@/helpers"
 
 
-const Overview = ({ hackathon }: any) => {
+const Overview = ({ hackathon, teams, positions }: any) => {
 
     let countdown = "Ended"
 
@@ -19,6 +19,11 @@ const Overview = ({ hackathon }: any) => {
         }
     }
 
+    const totalBets = positions.reduce((result: any, item: any) => {
+        result = result + Number(item.betAmount)
+        return result
+    }, 0)
+
     return (
         <div className="pt-6">
             <h3 className="text-3xl font-bold text-purple-400">
@@ -27,11 +32,13 @@ const Overview = ({ hackathon }: any) => {
             <p className="mt-2  text-lg">
                 {hackathon.description}
             </p> 
-            <div className="mt-4 flex items-center space-x-4">
+            <div className="mt-4 flex items-center space-x-2">
                 {/* <span className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg">
                     🏆{` `}{hackathon.title}
                 </span> */}
                 <span className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg">📅{` `}{countdown}</span>
+                <span className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg">🔥{` `}{teams.length} Teams</span>
+                <span className="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg">🏆{` `}{totalBets.toLocaleString()} SUI</span>
             </div>
         </div>
     )

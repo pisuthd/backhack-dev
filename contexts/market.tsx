@@ -110,21 +110,6 @@ const Provider = ({ children }: any) => {
 
     }, [])
 
-    // const addTeam = useCallback(async ({ hackathonId, teamId, name, description }: any) => {
-
-    //     const team = await client.models.Team.create({
-    //         hackathonId,
-    //         name,
-    //         description,
-    //         onchainId: teamId
-    //     })
-
-    //     console.log(team)
-
-    //     loadHackathons()
-
-    // }, [])
-
     const placeBet = useCallback(async ({
         betAmount,
         hackathonId,
