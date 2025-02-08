@@ -107,7 +107,7 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
 
                                     <p className="text-gray-500 line-clamp-2 my-1">{team.description}</p>
                                     <div className="mt-3 flex justify-between">
-                                        <span className="  font-bold my-auto">🔥 {totalBets.toLocaleString()} SUI</span>
+                                        <span className="  font-bold my-auto">⚡ {totalBets.toLocaleString()} SUI</span>
                                         <span
                                             onClick={() => {
                                                 onBet(team)
