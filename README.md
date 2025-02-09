@@ -22,14 +22,48 @@ Prizes are re-categorized or grouped for easier betting, ideally into 4-5 tiers,
 
 ![Screenshot from 2025-02-09 20-32-45](https://github.com/user-attachments/assets/dc128cd5-7933-4c9a-adc5-2893c2ce5e8c)
 
-Bettors select a team to place their bet on, with all bets pooled together for each hackathon. If the selected team finishes in the Top 10 Finalists, 0.28 SUI will be distributed among all bettors who chose teams within this tier.
+Bettors select a team to place their bet on, with all bets pooled together for each hackathon. If the selected team finishes in the Top 10 Finalists, 0.28 SUI will be distributed among all bettors who chose teams within the tier. Sometime the team can be classified in multiple tiers, so bettors who choose that team will receive payouts from each applicable tier.
 
+## AI-Agent
 
-## Features
+The AI-agent plays a major role in the system, leveraging Atoma Network's decentralized AI to ensure the privacy of each team's information. While this information is currently public, in the future, teams may interact with the AI privately and receive feedback. DeepSeek R1 serves as the primary LLM for handling the following actions:
 
-- **Authentication**: Setup with Amazon Cognito for secure user authentication.
-- **API**: Ready-to-use GraphQL endpoint with AWS AppSync.
-- **Database**: Real-time database powered by Amazon DynamoDB.
+### Fetch Teams from Official Listings
+
+Most hackathons display all the teams participating during the judging period, usually lasting 1-2 weeks. This allows judges to review and others to vote or check out what other projects are doing. 
+
+Each hackathon may collaborate with different organizers and have various website layouts and styles. This creates difficulty in importing the data to other platforms, and having an API to provide this information is unlikely in this industry.
+
+![Untitled design](https://github.com/user-attachments/assets/c04b4488-6af3-472e-a24a-55c01e9f1789)
+
+Above shows how it looks. The AI-agent will start analyzing the URLs and extract team information regardless of the layout or style. 
+
+As an AI-based application that works with prompts, we need to provide specific prompts to guide the system, one to list all teams and another to extract team information based on the given team name.
+
+```
+(1) Guide the system
+You are an AI assistant that reads official website content to fetch teams.
+
+(2) List all teams
+List all teams from the provided markdown content.
+Provided content:
+${content} (website data in markdown)
+
+(3) Extract team info
+Fetching description from Team: ${team}
+```
+
+This is also done by calling the Atoma completion chat API: https://api.atoma.network/v1/chat/completions
+
+## Review Team
+
+Another action we use is to review teams based on the provided description. This allows the agent to analyze each project, ensuring alignment with the hackathon theme and rules. If the deadline hasn’t passed, early feedback can help teams improve their submissions. 
+
+And for bettors, this allows them to make more informed decisions by understanding each team's details before placing their bets.
+
+![Screenshot from 2025-02-09 21-24-53](https://github.com/user-attachments/assets/c5f48bdc-293d-43db-93f8-3ecca4bcc6c3)
+
+Due to the limited time of the hackathon, we can analyze only the description. However, in the future, imagine AI reviewing codebases, social activity and providing insights to help projects go beyond the hackathon.
 
 ## Deploying to AWS
 
