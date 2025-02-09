@@ -52,6 +52,18 @@ const Provider = ({ children }: any) => {
 
     }, [])
 
+    const addReview = useCallback(async ({ teamId, feedback }: any) => {
+
+        await client.models.Review.create({
+            teamId,
+            reviewer: "DeepSeek R1", 
+            feedback
+        })
+
+        loadHackathons()
+
+    }, [])
+
     const addPosition = useCallback(async ({ hackathonId, userId, teamId, betAmount }: any) => {
 
         const { data } = await client.models.Position.list()
@@ -137,7 +149,8 @@ const Provider = ({ children }: any) => {
             crawl,
             addTeam,
             addPosition,
-            getPositions
+            getPositions,
+            addReview
         }), [
         userData,
         hackathons

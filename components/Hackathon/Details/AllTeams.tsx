@@ -4,13 +4,17 @@ import AddNewTeamModal from "@/modals/addNewTeam"
 import { useCallback, useContext, useEffect, useState } from "react"
 import BetModal from "@/modals/bet"
 import FetchTeamsModal from "@/modals/fetchTeams"
+import BaseModal from "@/modals/base"
+import TeamInfoModal from "@/modals/teamInfo"
+import ReviewTeamModal from "@/modals/reviewTeam"
 
 enum MODAL {
     NONE,
     ADD_NEW_TEAM,
     FETCH_TEAMS,
     REVIEW,
-    BET
+    BET,
+    INFO
 }
 
 const AllTeams = ({ hackathon, teams, positions }: any) => {
@@ -19,8 +23,18 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
 
     const [modal, setModal] = useState<MODAL>(MODAL.NONE)
 
-    const [currentTeam, setCurrentTeam] = useState(undefined)
+    const [currentTeam, setCurrentTeam] = useState<any>(undefined)
 
+    const [prizes, setPrizes] = useState([])
+
+    useEffect(() => {
+
+        (async () => {
+            const { data } = await hackathon.prizes()
+            setPrizes(data)
+        })()
+
+    }, [hackathon])
 
     const onBet = useCallback(async (currentTeam: any) => {
 
@@ -33,6 +47,11 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
         setModal(MODAL.BET)
 
     }, [isConnected])
+
+    const onInfo = useCallback((currentTeam: any) => {
+        setCurrentTeam(currentTeam)
+        setModal(MODAL.INFO)
+    }, [])
 
     return (
         <>
@@ -54,6 +73,21 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
                 visible={modal === MODAL.FETCH_TEAMS}
                 close={() => setModal(MODAL.NONE)}
                 hackathon={hackathon}
+            />
+
+
+            <TeamInfoModal
+                visible={modal === MODAL.INFO}
+                close={() => setModal(MODAL.NONE)}
+                currentTeam={currentTeam}
+            />
+
+            <ReviewTeamModal
+                visible={modal === MODAL.REVIEW}
+                close={() => setModal(MODAL.NONE)}
+                hackathon={hackathon}
+                teams={teams}
+                prizes={prizes}
             />
 
             <div className="p-6 mt-[20px] px-0">
@@ -85,7 +119,7 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
                         <button onClick={() => setModal(MODAL.ADD_NEW_TEAM)} className="my-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
                             Add New Team
                         </button>
-                        <button onClick={() => alert()} className="my-auto ml-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
+                        <button onClick={() => setModal(MODAL.REVIEW)} className="my-auto ml-auto flex flex-row cursor-pointer  bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-6 rounded-lg transition">
                             Review Team
                         </button>
                     </div>
@@ -113,16 +147,10 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
                                         {/* <span className="text-purple-400 font-bold my-auto">Scores: 40%</span> */}
                                     </div>
 
-                                    <p className="text-gray-500 line-clamp-2 my-1">{team.description}</p>
+                                    <p onClick={() => onInfo(team)} className="text-gray-500 hover:underline cursor-pointer line-clamp-2 my-1">{team.description}</p>
                                     <div className="mt-3 flex justify-between">
                                         <span className="  font-bold my-auto">⚡ {totalBets.toLocaleString()} SUI</span>
-                                        <span
-                                            onClick={() => {
-                                                onBet(team)
-                                            }}
-                                            className="text-purple-400 font-bold my-auto cursor-pointer hover:underline">
-                                            Reviews (3)
-                                        </span>
+                                        <ReviewsRow onInfo={onInfo} team={team} />
                                         <button
                                             className="bg-purple-600 cursor-pointer text-white px-4 my-auto py-2 rounded-lg hover:bg-purple-500"
                                             onClick={() => {
@@ -141,6 +169,32 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
             <div className="h-[60px]"></div>
 
         </>
+    )
+}
+
+const ReviewsRow = ({ onInfo, team }: any) => {
+
+    const [total, setTotal] = useState<number>(0)
+
+    useEffect(() => {
+
+
+
+        (async () => {
+            const { data } = await team.comments() 
+            setTotal(data.length)
+        })()
+
+    }, [team])
+
+    return (
+        <span
+            onClick={() => {
+                onInfo(team)
+            }}
+            className="text-purple-400 font-bold my-auto cursor-pointer hover:underline">
+            { total ? <>Reviews ({total})</> : ""}
+        </span>
     )
 }
 

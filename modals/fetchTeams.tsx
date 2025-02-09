@@ -95,7 +95,6 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
                 teams = [...initMessage.matchAll(teamRegex)].map(match => match[1]);
             }
 
-
             if (teams.length > 0) {
                 console.log("Teams: ", teams)
 
@@ -196,7 +195,7 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
             {hackathon && (
                 <>
                     <div className="py-2 pt-0">
-                        <p className="text-gray mt-2 px-0.5 text-base">Automatically import teams and their details by the AI-agent from the official hackathon website belows:</p>
+                        <p className="text-gray mt-2 px-0.5 text-base">Automatically import teams and their details by the DeepSeek's AI-agent from the official hackathon website belows:</p>
                         <div className="mt-4  flex flex-col space-y-2">
                             {hackathon.urls.map((url: string, index: number) => {
                                 return (

@@ -81,44 +81,44 @@ const schema = a.schema({
     image: a.url(),
     odds: a.integer()
   }).authorization((allow) => [allow.publicApiKey()]),
-  FetchTeamAI: a.generation({
-    aiModel: a.ai.model('Claude 3.5 Sonnet'),
-    systemPrompt: 'You are an AI assistant that reads official website content to fetch teams. Display the team name as the header, followed by its description.',
-    inferenceConfiguration: {
-      temperature: 1,
-      topP: 0.999,
-      maxTokens: 4096
-    }
-  })
-    .arguments({
-      description: a.string()
-    })
-    .returns(
-      a.customType({
-        team: a.string().array()
-      })
-    )
-    .authorization((allow) => allow.publicApiKey()),
-  ReviewTeamAI: a.generation({
-    aiModel: a.ai.model('Claude 3.5 Sonnet'),
-    systemPrompt: 'You are an AI assistant that reviews teams by analyzing their details, scoring their performance, and providing insights based on predefined criteria.',
-    inferenceConfiguration: {
-      temperature: 1,
-      topP: 0.999,
-      maxTokens: 4096
-    }
-  })
-    .arguments({
-      description: a.string()
-    })
-    .returns(
-      a.customType({
-        overallScore: a.integer(),
-        feedback: a.string(),
-        improvementSuggestions: a.string().array()
-      })
-    )
-    .authorization((allow) => allow.publicApiKey()),
+  // FetchTeamAI: a.generation({
+  //   aiModel: a.ai.model('Claude 3.5 Sonnet'),
+  //   systemPrompt: 'You are an AI assistant that reads official website content to fetch teams. Display the team name as the header, followed by its description.',
+  //   inferenceConfiguration: {
+  //     temperature: 1,
+  //     topP: 0.999,
+  //     maxTokens: 4096
+  //   }
+  // })
+  //   .arguments({
+  //     description: a.string()
+  //   })
+  //   .returns(
+  //     a.customType({
+  //       team: a.string().array()
+  //     })
+  //   )
+  //   .authorization((allow) => allow.publicApiKey()),
+  // ReviewTeamAI: a.generation({
+  //   aiModel: a.ai.model('Claude 3.5 Sonnet'),
+  //   systemPrompt: 'You are an AI assistant that reviews teams by analyzing their details, scoring their performance, and providing insights based on predefined criteria.',
+  //   inferenceConfiguration: {
+  //     temperature: 1,
+  //     topP: 0.999,
+  //     maxTokens: 4096
+  //   }
+  // })
+  //   .arguments({
+  //     description: a.string()
+  //   })
+  //   .returns(
+  //     a.customType({
+  //       overallScore: a.integer(),
+  //       feedback: a.string(),
+  //       improvementSuggestions: a.string().array()
+  //     })
+  //   )
+  //   .authorization((allow) => allow.publicApiKey()),
 });
 
 export type Schema = ClientSchema<typeof schema>;
