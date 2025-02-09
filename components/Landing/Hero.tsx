@@ -6,7 +6,7 @@ const Hero = () => (
     <>
         <section className="bg-gray-950 text-white pt-[150px] sm:pt-[200px] pb-[100px] text-center">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                <h1 className="text-3xl sm:text-5xl font-bold text-purple-400 leading-tight">
+                <h1  data-aos="fade-up" data-aos-duration="1000"  className="text-3xl sm:text-5xl font-bold text-purple-400 leading-tight">
                     Turn Your Hackathon Hype <br /> into Real Rewards
                 </h1>
                 <p className="mt-4 text-base sm:text-lg text-gray-300">

@@ -13,8 +13,11 @@ const TeamInfoModal = ({ visible, close, currentTeam }: any) => {
             (async () => {
 
                 const { data } = await currentTeam.comments()
-
-                data && data[0] && setReviews(data[0].feedback)
+                if (data && data[0]) {
+                    setReviews(data[0].feedback)
+                } else {
+                    setReviews(undefined)
+                }
             })()
         }
     }, [currentTeam])
