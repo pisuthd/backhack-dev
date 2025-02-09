@@ -4,8 +4,11 @@ import { useCallback, useContext, useReducer, useState } from "react"
 import { Puff } from 'react-loading-icons'
 import axios from "axios";
 import { DatabaseContext } from "@/contexts/database";
+import useAtoma from "@/hooks/useAtoma";
 
 const ReviewTeamModal = ({ visible, close, hackathon, teams, prizes }: any) => {
+
+    const { reviewTeam }: any = useAtoma()
 
     const { addReview }: any = useContext(DatabaseContext)
 
@@ -43,90 +46,97 @@ const ReviewTeamModal = ({ visible, close, hackathon, teams, prizes }: any) => {
 
         try {
 
-            const systemPrompt = [
-                "You are an AI assistant for reviewing teams participating in the hackathon ",
-                "with the following details:\n\n",
-                `Hackathon Name : ${hackathon.title}\n`,
-                `Hackathon Prizes:\n`,
-            ].concat(prizes.map((item: any) => `- ${item.title}\n`)).join("")
+            // const systemPrompt = [
+            //     "You are an AI assistant for reviewing teams participating in the hackathon ",
+            //     "with the following details:\n\n",
+            //     `Hackathon Name : ${hackathon.title}\n`,
+            //     `Hackathon Prizes:\n`,
+            // ].concat(prizes.map((item: any) => `- ${item.title}\n`)).join("")
 
-            const initPrompt = [
-                "Given the following teams:\n\n"
-            ]
-                .concat(teams.map((item: any, index: number) => `${index + 1}. **${item.name}** - ${item.description}\n`))
-                .concat([
-                    `\n\nPlease help review Team ${selected} based on the following factors:\n`,
-                    "Innovation: Does the project introduce a novel concept or improve existing ideas?\n",
-                    "Impact & Feasibility: Can this project have real-world applications? Is it viable beyond the hackathon?",
-                    "Prize Tier Relevance: Does this project align with the criteria of specific prize categories?"
-                ])
-                .join("")
+            // const initPrompt = [
+            //     "Given the following teams:\n\n"
+            // ]
+            //     .concat(teams.map((item: any, index: number) => `${index + 1}. **${item.name}** - ${item.description}\n`))
+            //     .concat([
+            //         `\n\nPlease help review Team ${selected} based on the following factors:\n`,
+            //         "Innovation: Does the project introduce a novel concept or improve existing ideas?\n",
+            //         "Impact & Feasibility: Can this project have real-world applications? Is it viable beyond the hackathon?",
+            //         "Prize Tier Relevance: Does this project align with the criteria of specific prize categories?"
+            //     ])
+            //     .join("")
 
-            let messages = [
-                {
-                    role: "system",
-                    content: systemPrompt
-                },
-                {
-                    role: 'user',
-                    content: initPrompt
-                }
-            ]
+            // let messages = [
+            //     {
+            //         role: "system",
+            //         content: systemPrompt
+            //     },
+            //     {
+            //         role: 'user',
+            //         content: initPrompt
+            //     }
+            // ]
 
-            let response = await axios.post(
-                'https://api.atoma.network/v1/chat/completions',
-                {
-                    stream: false,
-                    model: 'deepseek-ai/DeepSeek-R1',
-                    messages,
-                    max_tokens: 1024
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${process.env.ATOMA_API_KEY}`
-                    }
-                }
-            );
+            // let response = await axios.post(
+            //     'https://api.atoma.network/v1/chat/completions',
+            //     {
+            //         stream: false,
+            //         model: 'deepseek-ai/DeepSeek-R1',
+            //         messages,
+            //         max_tokens: 1024
+            //     },
+            //     {
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'Authorization': `Bearer ${process.env.ATOMA_API_KEY}`
+            //         }
+            //     }
+            // );
 
-            console.log(response.data)
+            // console.log(response.data)
 
-            let reviewMessage = response.data.choices[0].message.content
-            reviewMessage = reviewMessage.split("</think>")[1]
+            // let reviewMessage = response.data.choices[0].message.content
+            // reviewMessage = reviewMessage.split("</think>")[1]
 
-            console.log("reviewMessage:", reviewMessage)
+            // console.log("reviewMessage:", reviewMessage)
 
-            messages.push({
-                role: "assistant",
-                content: reviewMessage
+            // messages.push({
+            //     role: "assistant",
+            //     content: reviewMessage
+            // })
+
+            // messages.push({
+            //     role: 'user',
+            //     content: `Now assign a rating (0-100%) on Team ${selected}`
+            // })
+
+            // response = await axios.post(
+            //     'https://api.atoma.network/v1/chat/completions',
+            //     {
+            //         stream: false,
+            //         model: 'deepseek-ai/DeepSeek-R1',
+            //         messages,
+            //         max_tokens: 1024
+            //     },
+            //     {
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'Authorization': `Bearer ${process.env.ATOMA_API_KEY}`
+            //         }
+            //     }
+            // )
+
+            // let comment = response.data.choices[0].message.content
+
+            // comment = comment.split("</think>")[1]
+
+            // console.log("final comment: ", comment)
+
+            const comment = await reviewTeam({
+                hackathon,
+                prizes,
+                teams,
+                selected
             })
-
-            messages.push({
-                role: 'user',
-                content: `Now assign a rating (0-100%) on Team ${selected}`
-            })
-
-            response = await axios.post(
-                'https://api.atoma.network/v1/chat/completions',
-                {
-                    stream: false,
-                    model: 'deepseek-ai/DeepSeek-R1',
-                    messages,
-                    max_tokens: 1024
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${process.env.ATOMA_API_KEY}`
-                    }
-                }
-            )
-
-            let comment = response.data.choices[0].message.content
-
-            comment = comment.split("</think>")[1]
-
-            console.log("final comment: ", comment)
 
             const teamId = currentTeam.id
 

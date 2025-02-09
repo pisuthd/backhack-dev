@@ -2,21 +2,12 @@
 import BaseModal from "./base"
 import { useCallback, useContext, useReducer } from "react"
 import { Puff } from 'react-loading-icons'
-import axios from "axios";
-
-// import { generateClient } from "aws-amplify/api";
-// import { Schema } from "@/amplify/data/resource";
-// import { createAIHooks } from "@aws-amplify/ui-react-ai";
 import { DatabaseContext } from "@/contexts/database";
-
-// const client = generateClient<Schema>({ authMode: "apiKey" });
-// const { useAIConversation, useAIGeneration } = createAIHooks(client);
+import useAtoma from "@/hooks/useAtoma";
 
 const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
 
-    // const [state, fetchTeams] = useAIGeneration("FetchTeamAI")
-
-    // const { data, isLoading, hasError } = state
+    const { fetchTeams }: any = useAtoma()
 
     const { addTeam, crawl }: any = useContext(DatabaseContext)
 
@@ -41,139 +32,19 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
             const url = hackathon.urls[Math.floor(Math.random() * hackathon.urls.length)];
             const context = await crawl(url)
 
-            const initPrompt = [
-                "List all teams from the provided markdown content.",
-                "Provided content:",
-                context
-            ].join("")
+            const { hackathonId, teamId, team, description } = await fetchTeams({
+                context,
+                hackathon
+            })
 
-            let messages = [
-                {
-                    role: "system",
-                    content: `You are an AI assistant that reads official website content to fetch teams. `
-                },
-                {
-                    role: 'user',
-                    content: initPrompt
-                }
-            ]
+            await addTeam({
+                hackathonId,
+                teamId,
+                name: team,
+                description
+            })
 
-            let response = await axios.post(
-                'https://api.atoma.network/v1/chat/completions',
-                {
-                    stream: false,
-                    model: 'deepseek-ai/DeepSeek-R1',
-                    messages,
-                    max_tokens: 1024
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${process.env.ATOMA_API_KEY}`
-                    }
-                }
-            );
-
-            console.log(response.data)
-
-            let initMessage = response.data.choices[0].message.content
-            initMessage = initMessage.split("</think>")[1]
-
-            const regex = /\d+\.\s\*\*(.*?)\*\*/g;
-            let teams = [];
-            let match;
-
-            while ((match = regex.exec(initMessage)) !== null) {
-                teams.push(match[1]);
-            }
-
-            if (teams.length === 0) {
-                // Regex to match team names after numbered list
-                const teamRegex = /^\d+\.\s+(.*)$/gm;
-
-                // Extract team names
-                teams = [...initMessage.matchAll(teamRegex)].map(match => match[1]);
-            }
-
-            if (teams.length > 0) {
-                console.log("Teams: ", teams)
-
-                messages.push({
-                    role: "assistant",
-                    content: initMessage
-                })
-
-                const team = teams[Math.floor(Math.random() * teams.length)];
-
-                console.log("Fetching description from Team: ", team)
-
-                messages.push({
-                    role: 'user',
-                    content: `Fetch description of team ${team}`
-                })
-
-                response = await axios.post(
-                    'https://api.atoma.network/v1/chat/completions',
-                    {
-                        stream: false,
-                        model: 'deepseek-ai/DeepSeek-R1',
-                        messages,
-                        max_tokens: 1024
-                    },
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${process.env.ATOMA_API_KEY}`
-                        }
-                    }
-                )
-
-                let description = response.data.choices[0].message.content
- 
-                const lastThinkIndex = description.lastIndexOf("</think>");
-
-                // If a colon is found, split the string at the last colon
-                if (lastThinkIndex !== -1) {
-                    description = description.slice(lastThinkIndex + 8).trim(); // Content after the last colon
-                }
-
-                if (description.indexOf(">") !== -1) {
-                    description = description.split(">")[1]
-                }
-
-                if (description.indexOf("the provided content:") !== -1) {
-                    description = description.split("the provided content:")[1]
-                }
-
-                if (description.indexOf("---") !== -1) {
-                    description = description.split("---")[1]
-                }
-
-                console.log("Description after trimmed: ", description)
-
-                const { data } = await hackathon.teams()
-
-                const maxTeamId = data.reduce((result: number, item: any) => {
-                    if (item.onchainId > result) {
-                        result = item.onchainId
-                    }
-                    return result
-                }, 0)
-
-                const teamId = maxTeamId + 1
-                const hackathonId = hackathon.id
-
-                await addTeam({
-                    hackathonId,
-                    teamId,
-                    name: team,
-                    description
-                })
-
-                close()
-            } else {
-                throw new Error("No teams found. The website may be down or there may be another issue.")
-            }
+            close()
 
         } catch (e: any) {
             console.log(e)
