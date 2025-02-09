@@ -12,7 +12,6 @@ import { DatabaseContext } from "@/contexts/database";
 // const client = generateClient<Schema>({ authMode: "apiKey" });
 // const { useAIConversation, useAIGeneration } = createAIHooks(client);
 
-
 const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
 
     // const [state, fetchTeams] = useAIGeneration("FetchTeamAI")
@@ -30,8 +29,6 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
 
     const onStart = useCallback(async () => {
 
-
-
         if (hackathon.urls.length === 0) {
             setState({ errorMessage: `No URL provided` })
             return
@@ -42,7 +39,6 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
         try {
 
             const url = hackathon.urls[Math.floor(Math.random() * hackathon.urls.length)];
-
             const context = await crawl(url)
 
             const initPrompt = [
@@ -80,7 +76,8 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
 
             console.log(response.data)
 
-            const initMessage = response.data.choices[0].message.content
+            let initMessage = response.data.choices[0].message.content
+            initMessage = initMessage.split("</think>")[1]
 
             const regex = /\d+\.\s\*\*(.*?)\*\*/g;
             let teams = [];
@@ -90,12 +87,21 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
                 teams.push(match[1]);
             }
 
+            if (teams.length === 0) {
+                // Regex to match team names after numbered list
+                const teamRegex = /^\d+\.\s+(.*)$/gm;
+
+                // Extract team names
+                teams = [...initMessage.matchAll(teamRegex)].map(match => match[1]);
+            }
+
+
             if (teams.length > 0) {
                 console.log("Teams: ", teams)
 
                 messages.push({
                     role: "assistant",
-                    content: response.data.choices[0].message.content
+                    content: initMessage
                 })
 
                 const team = teams[Math.floor(Math.random() * teams.length)];
@@ -123,27 +129,26 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
                     }
                 )
 
-                const finalMessage = response.data.choices[0].message.content
+                let description = response.data.choices[0].message.content
+ 
+                const lastThinkIndex = description.lastIndexOf("</think>");
 
-                // Regex pattern to capture project descriptions
-                const pattern = /\*\*(.*?)\*\*\s*\\?[\s\S]*?\\?\s*([^\\]+)/g;
-
-                // Array to store descriptions
-                let descriptions = [];
-                match = undefined
-
-                while ((match = pattern.exec(finalMessage)) !== null) {
-                    descriptions.push(match[2].trim());
+                // If a colon is found, split the string at the last colon
+                if (lastThinkIndex !== -1) {
+                    description = description.slice(lastThinkIndex + 8).trim(); // Content after the last colon
                 }
 
-                console.log("Description: ", descriptions[descriptions.length - 1])
+                if (description.indexOf(">") !== -1) {
+                    description = description.split(">")[1]
+                }
 
-                let description = descriptions[descriptions.length - 1] 
-                const lines = description.split("\n");
-                lines.shift(); // Remove the first line
+                if (description.indexOf("the provided content:") !== -1) {
+                    description = description.split("the provided content:")[1]
+                }
 
-                // Join the remaining lines back into a single string
-                description = lines.join("\n");
+                if (description.indexOf("---") !== -1) {
+                    description = description.split("---")[1]
+                }
 
                 console.log("Description after trimmed: ", description)
 
@@ -171,16 +176,14 @@ const FetchTeamsModal = ({ visible, close, hackathon }: any) => {
                 throw new Error("No teams found. The website may be down or there may be another issue.")
             }
 
-
         } catch (e: any) {
             console.log(e)
             setState({ errorMessage: `${e.message}` })
         }
 
-
         setState({ loading: false })
-    }, [hackathon])
 
+    }, [hackathon])
 
     return (
         <BaseModal

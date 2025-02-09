@@ -109,7 +109,7 @@ const AllTeams = ({ hackathon, teams, positions }: any) => {
                             (
                                 <div key={index} className="bg-gray-900    p-5 rounded-lg shadow-lg">
                                     <div className="flex justify-between">
-                                        <h2 className="text-xl font-semibold">{team.name}</h2>
+                                        <h2 className="text-xl font-semibold line-clamp-1">{team.name}</h2>
                                         {/* <span className="text-purple-400 font-bold my-auto">Scores: 40%</span> */}
                                     </div>
 
