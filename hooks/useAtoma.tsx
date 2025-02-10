@@ -181,7 +181,7 @@ const useAtoma = () => {
                 stream: false,
                 model: 'deepseek-ai/DeepSeek-R1',
                 messages,
-                max_tokens: 1024
+                max_tokens: 2048
             },
             {
                 headers: {
