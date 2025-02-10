@@ -5,6 +5,7 @@
 The system is live on the Sui Testnet. With **zkLogin** enabling seamless Google sign-in, there's no need for a sophisticated Web3 wallet.
 
 - https://backhack.dev
+- [YouTube](https://www.youtube.com/watch?v=c7kE_27zz-U)
 
 ## Background
 
