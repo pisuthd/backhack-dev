@@ -59,6 +59,9 @@ const Header = () => {
             <Link href="/hackathons" className="hover:text-purple-400 transition">
               Hackathons
             </Link>
+            <Link href="https://github.com/pisuthd/backhack-dev" target="_blank" className="hover:text-purple-400 transition">
+              Github
+            </Link>
             {/* <Link href="/teams" className="hover:text-purple-400 transition">
               Teams
             </Link> */}

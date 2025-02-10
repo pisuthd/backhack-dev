@@ -14,7 +14,7 @@ const Overview = ({ hackathon, teams, positions }: any) => {
 
         if (days > 0) {
             countdown = `Ends in ${days}d`
-        } else {
+        } else if (days === 0) {
             countdown = `Ends in ${hours}h`
         }
     }

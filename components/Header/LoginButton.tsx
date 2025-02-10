@@ -49,7 +49,7 @@ const LoginButton = () => {
             {!isConnected && (
                 <button onClick={() => {
                     setModal(true) 
-                }} className={`hidden md:block cursor-pointer bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded-xl transition `}>
+                }} className={`block cursor-pointer bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded-xl transition `}>
                     Login <span className="hidden md:inline-block">with zkLogin</span>
                 </button>
             )}
