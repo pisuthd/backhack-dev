@@ -36,7 +36,7 @@ Each hackathon may collaborate with different organizers and have various websit
 
 ![Untitled design](https://github.com/user-attachments/assets/c04b4488-6af3-472e-a24a-55c01e9f1789)
 
-Above shows how it looks. The AI-agent will start analyzing the URLs and extract team information regardless of the layout or style. 
+With the AI-agent, as shown above. It will start analyzing the URLs and extracting team information regardless of the layout or style.
 
 As an AI-based application that works with prompts, we need to provide specific prompts to guide the system, one to list all teams and another to extract team information based on the given team name.
 
@@ -65,13 +65,83 @@ And for bettors, this allows them to make more informed decisions by understandi
 
 Due to the limited time of the hackathon, we can analyze only the description. However, in the future, imagine AI reviewing codebases, social activity and providing insights to help projects go beyond the hackathon.
 
-## Deploying to AWS
+## Future Works
 
-For detailed instructions on deploying your application, refer to the [deployment section](https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/#deploy-a-fullstack-app-to-aws) of our documentation.
+The current hackathon version can only fetch teams and review descriptions but in the future, we plan to do much more, such as:
 
-## Security
+- **Deeper Team Analysis** - Analyze team codebases and social activity to provide detailed feedback and accurate improvement suggestions.
+- **Code Review** - Automate smart contract and code audits to help teams launch with ease and confidence.
+- **Odds Adjustment** - Dynamically adjust prize odds based on team quantity and AI-assessed performance.
+- **Matchmaking** - Identify potential collaborations between teams that could partner or work together.
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+## How to Use
+
+Simply navigate to https://backhack.dev, select a hackathon to bet on, and follow these steps:
+
+**1. Login with Google**
+
+* Click 'Login' and choose an authentication method (currently supports Google only).
+* Check your unique wallet address. Ensure it's funded.
+
+**2. Choose a Team**
+
+* On the hackathon page, review the available prize tiers and browse all participating teams.
+* Use AI-agent actions to sync teams and review projects.
+* Place bets on one (or more) teams you believe will advance to prize-winning rounds.
+
+**3. Claim Rewards**
+
+* Once the hackathon ends, if your chosen team wins, you can claim rewards.
+* All bets for the hackathon are aggregated into a single pool and distributed based on odds and bettor contributions.
+
+## How to Test
+
+The project is built using the AWS Amplify Stack with Next.js for the frontend. All backend configurations are managed inside the `/amplify` folder. When the GitHub repo is updated, AWS automatically deploys services like real-time databases and APIs. 
+
+However, outside of this stack, we also have a Sui Move smart contract that handles all betting processes. To run the system locally after downloading:
+
+```
+npm install
+```
+
+You must retrieve `amplify_outputs.json` from the AWS Dashboard after linking your GitHub repo to AWS and place it in the root folder. 
+
+Also, ensure you obtain API keys from the AI services we use and add them to the .env file:
+
+```
+# 3rd parties AI services
+FIRECRAWL_API_KEY=your-api-key
+ATOMA_API_KEY=your-api-key
+
+# ZKlogin 
+ENOKI_API_KEY=your-api-key
+GOOGLE_CLIENT_ID=your-client-id
+```
+
+We can run the frontend with:
+
+```
+npm run dev
+```
+
+For the smart contract, navigate to `/sui-contract/backhack` and run test cases with:
+
+```
+sui move test
+```
+
+Refer to the Sui documentation for deploying a new contract on the live network and updating the JSON file in the project accordingly.
+
+For detailed instructions on deploying to AWS cloud, refer to the [deployment section](https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components/#deploy-a-fullstack-app-to-aws) of our documentation.
+
+## Deployment
+
+### Sui Testnet
+
+Component Name | ID/Address
+--- | --- 
+Package ID |  0x962321d30ccbf9c4c5de58bc32d64ab6fa2777ede18d1107dcb080d6acad8583
+Market State | 0x3909e8b32318a0fbe27c365288f0d2a14d364218f743773c7f475e898e17824a
 
 ## License
 
